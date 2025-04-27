@@ -38,8 +38,8 @@ env/
 *~
 
 # Project specific
-results/
-monitoring/
+./results/
+./monitoring/
 device_info.json
 device_detection_error.log
 *.log

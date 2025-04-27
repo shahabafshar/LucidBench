@@ -64,11 +64,22 @@ run_benchmark() {
     local device=$1
     local filesystem=$2
     local device_type=$3
+    local test_type=$4
+    local run_dir=$5
     
-    echo -e "\n${YELLOW}Running benchmark for ${device} with ${filesystem}${NC}"
+    echo -e "\n${YELLOW}Running benchmark for ${device} with ${filesystem} (${test_type})${NC}"
+    
+    # Create test directory
+    local test_dir="${run_dir}/${device_type}_${device}_${filesystem}_${test_type}"
+    mkdir -p "$test_dir"
     
     # Start system monitoring
-    python3 "${PROJECT_ROOT}/src/monitoring/monitor.py" start_monitoring "${device_type}_${filesystem}" &
+    python3 "${PROJECT_ROOT}/src/monitoring/monitor.py" \
+        "${test_dir}/monitoring.json" \
+        "$device_type" \
+        "$device" \
+        "$filesystem" \
+        "$test_type" &
     monitor_pid=$!
     
     # Wait for monitoring to start
@@ -78,21 +89,31 @@ run_benchmark() {
     docker run --rm \
         --name lucidbench \
         --privileged \
-        -v "${PROJECT_ROOT}/results:/results" \
+        -v "$test_dir:/results" \
         -v "/dev/${device}:/dev/benchmark" \
         lucidbench \
-        /dev/benchmark ${filesystem}
+        /dev/benchmark \
+        "$filesystem" \
+        "/results/test.json" \
+        "$device_type" \
+        "$device" \
+        "$test_type"
     
     # Stop system monitoring
-    python3 "${PROJECT_ROOT}/src/monitoring/monitor.py" stop_monitoring
-    
-    # Wait for monitoring to stop
-    sleep 2
+    kill $monitor_pid
+    wait $monitor_pid 2>/dev/null
 }
 
 # Main execution
 echo -e "${GREEN}LucidBench Orchestrator${NC}"
 echo "======================="
+
+# Parse arguments
+USE_ALL=0
+if [[ "$1" == "--all" ]]; then
+    USE_ALL=1
+    shift
+fi
 
 # Run setup
 run_setup
@@ -115,9 +136,20 @@ if [ ! -s "${PROJECT_ROOT}/device_info.json" ]; then
     exit 1
 fi
 
+# Create run directory
+RUN_ID=$(date +"%Y%m%d_%H%M%S")
+RUN_DIR="${PROJECT_ROOT}/results/run_${RUN_ID}"
+mkdir -p "$RUN_DIR"
+
+# Read filesystems from config
+FILESYSTEMS=()
+while IFS= read -r fs; do
+    [ -n "$fs" ] && FILESYSTEMS+=("$fs")
+done < "${PROJECT_ROOT}/config/filesystems.txt"
+
 # Read device information
 devices_found=0
-for device_type in "HDD" "SATA SSD" "NVMe SSD"; do
+for device_type in "HDD" "SSD" "NVMe"; do
     devices=$(python3 -c "
 import json
 try:
@@ -134,9 +166,16 @@ except Exception as e:
         echo -e "\n${GREEN}Testing ${device_type} devices: ${devices}${NC}"
         devices_found=1
         
+        # If not using all devices, take only the first one
+        if [ $USE_ALL -eq 0 ]; then
+            devices=$(echo $devices | awk '{print $1}')
+        fi
+        
         for device in $devices; do
-            for filesystem in "ext4" "xfs" "btrfs"; do
-                run_benchmark $device $filesystem $device_type
+            for filesystem in "${FILESYSTEMS[@]}"; do
+                for test_type in "random_read" "random_write" "sequential_read" "sequential_write"; do
+                    run_benchmark "$device" "$filesystem" "$device_type" "$test_type" "$RUN_DIR"
+                done
             done
         done
     else
@@ -152,8 +191,7 @@ if [ $devices_found -eq 0 ]; then
 fi
 
 echo -e "\n${GREEN}Benchmarking complete${NC}"
-echo "Results are available in the 'results' directory"
-echo "Monitoring data is available in the 'monitoring' directory"
+echo "Results are available in: $RUN_DIR"
 
 # Cleanup
 cleanup 

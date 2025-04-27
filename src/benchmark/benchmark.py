@@ -9,16 +9,19 @@ import signal
 from datetime import datetime
 
 class FilesystemBenchmark:
-    def __init__(self, device_path, filesystem):
+    def __init__(self, device_path, filesystem, output_file, storage_type, device, test_type):
         self.device_path = device_path
         self.filesystem = filesystem
+        self.output_file = output_file
+        self.storage_type = storage_type
+        self.device = device
+        self.test_type = test_type
         self.mount_point = "/mnt/benchmark"
-        self.results_dir = "/results"
         self.cleanup_needed = False
         
         # Create mount point if it doesn't exist
         os.makedirs(self.mount_point, exist_ok=True)
-        os.makedirs(self.results_dir, exist_ok=True)
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
     def cleanup(self):
         """Clean up resources."""
@@ -68,11 +71,8 @@ class FilesystemBenchmark:
             print(f"Error unmounting device: {e.stderr}", file=sys.stderr)
             raise
 
-    def run_fio_test(self, test_type):
+    def run_fio_test(self):
         """Run an FIO benchmark test."""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_file = os.path.join(self.results_dir, f"{test_type}_{self.filesystem}_{timestamp}.json")
-        
         fio_config = {
             "random_read": {
                 "rw": "randread",
@@ -116,11 +116,11 @@ class FilesystemBenchmark:
             }
         }
         
-        if test_type not in fio_config:
-            raise ValueError(f"Unknown test type: {test_type}")
+        if self.test_type not in fio_config:
+            raise ValueError(f"Unknown test type: {self.test_type}")
         
-        config = fio_config[test_type]
-        print(f"Running {test_type} benchmark...")
+        config = fio_config[self.test_type]
+        print(f"Running {self.test_type} benchmark...")
         
         try:
             cmd = [
@@ -128,43 +128,49 @@ class FilesystemBenchmark:
                 "--name=test",
                 f"--filename={self.mount_point}/testfile",
                 "--output-format=json",
-                f"--output={output_file}",
+                f"--output={self.output_file}",
             ] + [f"--{k}={v}" for k, v in config.items()]
             
             subprocess.run(cmd, check=True, capture_output=True, text=True)
-            return output_file
+            
+            # Add metadata to the output file
+            with open(self.output_file, 'r') as f:
+                data = json.load(f)
+            
+            metadata = {
+                "storage_type": self.storage_type,
+                "device": self.device,
+                "filesystem": self.filesystem,
+                "test_type": self.test_type,
+                "start_time": datetime.now().isoformat()
+            }
+            
+            output_data = {**metadata, **data}
+            
+            with open(self.output_file, 'w') as f:
+                json.dump(output_data, f, indent=2)
+            
+            return self.output_file
         except subprocess.CalledProcessError as e:
             print(f"Error running FIO test: {e.stderr}", file=sys.stderr)
             raise
 
-    def run_benchmarks(self):
-        """Run all benchmark tests."""
-        results = {}
-        
+    def run_benchmark(self):
+        """Run the benchmark test."""
         try:
             # Prepare device
             self.unmount_device()  # Ensure device is unmounted
             self.format_device()
             self.mount_device()
             
-            # Run benchmarks
-            test_types = ["random_read", "random_write", "sequential_read", "sequential_write"]
-            for test_type in test_types:
-                try:
-                    results[test_type] = self.run_fio_test(test_type)
-                except Exception as e:
-                    print(f"Error in {test_type} benchmark: {e}", file=sys.stderr)
-                    continue
+            # Run benchmark
+            result_file = self.run_fio_test()
             
-            if not results:
-                raise RuntimeError("No benchmarks completed successfully")
+            print(f"\nBenchmark Results:")
+            print(f"=================")
+            print(f"Result file: {result_file}")
             
-            print("\nBenchmark Results:")
-            print("=================")
-            for test_type, result_file in results.items():
-                print(f"{test_type}: {result_file}")
-            
-            return results
+            return result_file
             
         except Exception as e:
             print(f"\nError during benchmark: {e}", file=sys.stderr)
@@ -173,12 +179,16 @@ class FilesystemBenchmark:
             self.cleanup()
 
 def main():
-    if len(sys.argv) != 3:
-        print("Usage: benchmark.py <device_path> <filesystem>", file=sys.stderr)
+    if len(sys.argv) != 7:
+        print("Usage: benchmark.py <device_path> <filesystem> <output_file> <storage_type> <device> <test_type>", file=sys.stderr)
         sys.exit(1)
     
     device_path = sys.argv[1]
     filesystem = sys.argv[2]
+    output_file = sys.argv[3]
+    storage_type = sys.argv[4]
+    device = sys.argv[5]
+    test_type = sys.argv[6]
     
     if not os.path.exists(device_path):
         print(f"Error: Device {device_path} does not exist", file=sys.stderr)
@@ -189,8 +199,8 @@ def main():
         sys.exit(1)
     
     try:
-        benchmark = FilesystemBenchmark(device_path, filesystem)
-        results = benchmark.run_benchmarks()
+        benchmark = FilesystemBenchmark(device_path, filesystem, output_file, storage_type, device, test_type)
+        result_file = benchmark.run_benchmark()
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)

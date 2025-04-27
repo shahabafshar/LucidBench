@@ -51,19 +51,19 @@ class DeviceDetector:
             return None
 
     def classify_device(self, device_info: Dict) -> str:
-        """Classify device as HDD, SATA SSD, or NVMe SSD."""
+        """Classify device as HDD, SSD, or NVMe."""
         if not device_info:
             return 'Unknown'
             
         model = device_info.get('model', '').lower()
         if 'nvme' in model:
-            return 'NVMe SSD'
+            return 'NVMe'
         
         rotation_rate = device_info.get('rotation_rate', '').lower()
         if 'rpm' in rotation_rate:
             return 'HDD'
         elif 'solid state' in model or 'ssd' in model:
-            return 'SATA SSD'
+            return 'SSD'
         else:
             return 'Unknown'
 
@@ -99,8 +99,8 @@ class DeviceDetector:
         """Get free devices grouped by their type."""
         devices_by_type = {
             'HDD': [],
-            'SATA SSD': [],
-            'NVMe SSD': [],
+            'SSD': [],
+            'NVMe': [],
             'Unknown': []
         }
         
