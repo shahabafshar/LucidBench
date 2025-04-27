@@ -50,13 +50,14 @@ class DeviceDetector:
             print(f"Error getting device info for {device_name}: {e}", file=sys.stderr)
             return None
 
-    def classify_device(self, device_info: Dict) -> str:
+    def classify_device(self, device_info: Dict, device_name: str = None) -> str:
         """Classify device as HDD, SSD, or NVMe."""
         if not device_info:
             return 'Unknown'
-            
+        
         model = device_info.get('model', '').lower()
-        if 'nvme' in model:
+        # Check model or device name for NVMe
+        if 'nvme' in model or (device_name and device_name.startswith('nvme')):
             return 'NVMe'
         
         rotation_rate = device_info.get('rotation_rate', '').lower()
@@ -84,7 +85,7 @@ class DeviceDetector:
             device_info = self.get_device_info(device_name)
             
             if device_info:
-                device_type = self.classify_device(device_info)
+                device_type = self.classify_device(device_info, device_name)
                 self.devices[device_name] = {
                     'type': device_type,
                     'size': device['size'],

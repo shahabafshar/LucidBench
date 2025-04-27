@@ -136,16 +136,37 @@ if [ ! -s "${PROJECT_ROOT}/device_info.json" ]; then
     exit 1
 fi
 
-# Create run directory
-RUN_ID=$(date +"%Y%m%d_%H%M%S")
-RUN_DIR="${PROJECT_ROOT}/results/run_${RUN_ID}"
-mkdir -p "$RUN_DIR"
+# Read detected storage categories
+STORAGE_CATEGORIES=$(python3 -c "import json; f=open('${PROJECT_ROOT}/device_info.json'); d=json.load(f); print(', '.join([k for k,v in d['free_devices_by_type'].items() if v]))")
 
 # Read filesystems from config
 FILESYSTEMS=()
 while IFS= read -r fs; do
     [ -n "$fs" ] && FILESYSTEMS+=("$fs")
 done < "${PROJECT_ROOT}/config/filesystems.txt"
+FILESYSTEMS_LIST=$(IFS=, ; echo "${FILESYSTEMS[*]}")
+
+# Define test types
+TEST_TYPES="random_read, random_write, sequential_read, sequential_write"
+
+# Show summary and prompt user
+clear
+
+echo -e "${YELLOW}Detected Storage Categories:${NC} $STORAGE_CATEGORIES"
+echo -e "${YELLOW}Configured Filesystems:${NC} $FILESYSTEMS_LIST"
+echo -e "${YELLOW}Test Types:${NC} $TEST_TYPES"
+echo
+read -p "Do you want to continue with these settings? (y/n): " CONTINUE
+if [[ ! "$CONTINUE" =~ ^[Yy]$ ]]; then
+    echo -e "${RED}Aborting as per user request.${NC}"
+    cleanup
+    exit 0
+fi
+
+# Create run directory
+RUN_ID=$(date +"%Y%m%d_%H%M%S")
+RUN_DIR="${PROJECT_ROOT}/results/run_${RUN_ID}"
+mkdir -p "$RUN_DIR"
 
 # Read device information
 devices_found=0
@@ -158,6 +179,7 @@ try:
         devices = data['free_devices_by_type'].get('$device_type', [])
         print(' '.join(devices))
 except Exception as e:
+    import sys
     print(f'Error reading device info: {e}', file=sys.stderr)
     sys.exit(1)
 ")

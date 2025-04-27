@@ -81,8 +81,8 @@ for cmd in "${required_commands[@]}"; do
                 install_package "fio"
                 ;;
         esac
-        if ! check_command $cmd; then
-            missing_commands=1
+    if ! check_command $cmd; then
+        missing_commands=1
         fi
     fi
 done
@@ -104,7 +104,7 @@ missing_packages=0
 for pkg in "${required_packages[@]}"; do
     if ! check_package $pkg; then
         if ! install_package $pkg; then
-            missing_packages=1
+        missing_packages=1
         fi
     fi
 done

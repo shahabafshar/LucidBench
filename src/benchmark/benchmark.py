@@ -36,12 +36,24 @@ class FilesystemBenchmark:
         """Format the device with the specified filesystem."""
         print(f"Formatting {self.device_path} with {self.filesystem}...")
         try:
-            if self.filesystem == "ext4":
+            if self.filesystem == "ext2":
+                subprocess.run(["mkfs.ext2", "-F", self.device_path], check=True, capture_output=True, text=True)
+            elif self.filesystem == "ext3":
+                subprocess.run(["mkfs.ext3", "-F", self.device_path], check=True, capture_output=True, text=True)
+            elif self.filesystem == "ext4":
                 subprocess.run(["mkfs.ext4", "-F", self.device_path], check=True, capture_output=True, text=True)
             elif self.filesystem == "xfs":
                 subprocess.run(["mkfs.xfs", "-f", self.device_path], check=True, capture_output=True, text=True)
             elif self.filesystem == "btrfs":
                 subprocess.run(["mkfs.btrfs", "-f", self.device_path], check=True, capture_output=True, text=True)
+            elif self.filesystem == "vfat":
+                subprocess.run(["mkfs.vfat", self.device_path], check=True, capture_output=True, text=True)
+            elif self.filesystem == "fat":
+                subprocess.run(["mkfs.fat", self.device_path], check=True, capture_output=True, text=True)
+            elif self.filesystem == "ntfs":
+                subprocess.run(["mkfs.ntfs", "-F", self.device_path], check=True, capture_output=True, text=True)
+            elif self.filesystem == "f2fs":
+                subprocess.run(["mkfs.f2fs", self.device_path], check=True, capture_output=True, text=True)
             else:
                 raise ValueError(f"Unsupported filesystem: {self.filesystem}")
         except subprocess.CalledProcessError as e:
@@ -124,10 +136,10 @@ class FilesystemBenchmark:
         
         try:
             cmd = [
-                "fio",
+            "fio",
                 "--name=test",
                 f"--filename={self.mount_point}/testfile",
-                "--output-format=json",
+            "--output-format=json",
                 f"--output={self.output_file}",
             ] + [f"--{k}={v}" for k, v in config.items()]
             
@@ -194,7 +206,7 @@ def main():
         print(f"Error: Device {device_path} does not exist", file=sys.stderr)
         sys.exit(1)
     
-    if filesystem not in ["ext4", "xfs", "btrfs"]:
+    if filesystem not in ["ext2", "ext3", "ext4", "xfs", "btrfs", "vfat", "fat", "ntfs", "f2fs"]:
         print(f"Error: Unsupported filesystem {filesystem}", file=sys.stderr)
         sys.exit(1)
     

@@ -1,3 +1,10 @@
+ext2
+ext3
 ext4
 xfs
-btrfs 
+btrfs
+vfat
+fat
+ntfs
+f2fs
+

@@ -51,7 +51,6 @@ class SystemMonitor:
             cpu_percent = psutil.cpu_percent(interval=1)
             memory = psutil.virtual_memory()
             disk_io = psutil.disk_io_counters()
-            
             return {
                 "timestamp": datetime.now().isoformat(),
                 "cpu_percent": cpu_percent,
