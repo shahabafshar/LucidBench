@@ -8,6 +8,10 @@ RUN apt-get update && apt-get install -y \
     xfsprogs \
     btrfs-progs \
     e2fsprogs \
+    dosfstools \
+    ntfs-3g \
+    f2fs-tools \
+    exfatprogs \
     && rm -rf /var/lib/apt/lists/*
 
 # Create necessary directories
