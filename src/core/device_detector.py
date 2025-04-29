@@ -112,9 +112,9 @@ class DeviceDetector:
 
 def main():
     try:
-        detector = DeviceDetector()
-        detector.detect_devices()
-        
+    detector = DeviceDetector()
+    detector.detect_devices()
+    
         output = {
             'devices': detector.devices,
             'free_devices_by_type': detector.get_free_devices_by_type()

@@ -51,7 +51,7 @@ class SystemMonitor:
             cpu_percent = psutil.cpu_percent(interval=1)
             memory = psutil.virtual_memory()
             disk_io = psutil.disk_io_counters()
-            return {
+                return {
                 "timestamp": datetime.now().isoformat(),
                 "cpu_percent": cpu_percent,
                 "memory_percent": memory.percent,
@@ -61,7 +61,7 @@ class SystemMonitor:
                 "disk_write_bytes": disk_io.write_bytes if disk_io else 0,
                 "disk_read_count": disk_io.read_count if disk_io else 0,
                 "disk_write_count": disk_io.write_count if disk_io else 0
-            }
+                }
         except Exception as e:
             print(f"Warning: Error getting system stats: {e}", file=sys.stderr)
             return None
@@ -92,7 +92,7 @@ class SystemMonitor:
         
         stats = []
         try:
-            while self.running:
+        while self.running:
                 stat = self.get_system_stats()
                 if stat:
                     stats.append(stat)

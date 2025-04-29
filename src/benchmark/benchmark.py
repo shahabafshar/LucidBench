@@ -42,9 +42,9 @@ class FilesystemBenchmark:
                 subprocess.run(["/usr/sbin/mkfs.ext3", "-F", self.device_path], check=True, capture_output=True, text=True)
             elif self.filesystem == "ext4":
                 subprocess.run(["/usr/sbin/mkfs.ext4", "-F", self.device_path], check=True, capture_output=True, text=True)
-            elif self.filesystem == "xfs":
+        elif self.filesystem == "xfs":
                 subprocess.run(["/usr/sbin/mkfs.xfs", "-f", self.device_path], check=True, capture_output=True, text=True)
-            elif self.filesystem == "btrfs":
+        elif self.filesystem == "btrfs":
                 subprocess.run(["/usr/sbin/mkfs.btrfs", "-f", self.device_path], check=True, capture_output=True, text=True)
             elif self.filesystem == "vfat":
                 subprocess.run(["/usr/sbin/mkfs.vfat", self.device_path], check=True, capture_output=True, text=True)
@@ -54,8 +54,8 @@ class FilesystemBenchmark:
                 subprocess.run(["/usr/sbin/mkfs.ntfs", "-F", self.device_path], check=True, capture_output=True, text=True)
             elif self.filesystem == "f2fs":
                 subprocess.run(["/usr/sbin/mkfs.f2fs", self.device_path], check=True, capture_output=True, text=True)
-            else:
-                raise ValueError(f"Unsupported filesystem: {self.filesystem}")
+        else:
+            raise ValueError(f"Unsupported filesystem: {self.filesystem}")
         except subprocess.CalledProcessError as e:
             print(f"Error formatting device: {e.stderr}", file=sys.stderr)
             raise

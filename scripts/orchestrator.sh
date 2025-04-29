@@ -175,7 +175,7 @@ for device_type in "HDD" "SSD" "NVMe"; do
 import json
 try:
     with open('${PROJECT_ROOT}/device_info.json') as f:
-        data = json.load(f)
+    data = json.load(f)
         devices = data['free_devices_by_type'].get('$device_type', [])
         print(' '.join(devices))
 except Exception as e:
