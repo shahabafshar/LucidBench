@@ -39,6 +39,7 @@ env/
 
 # Project specific
 results/
+results-bak/
 device_info.json
 device_detection_error.log
 *.log
