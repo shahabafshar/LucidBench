@@ -1,0 +1,43 @@
+{
+  "storage_type": "HDD",
+  "device": "sda",
+  "filesystem": "fat",
+  "test_type": "sequential_write",
+  "start_time": "2025-04-27T23:45:38.121636",
+  "end_time": "2025-04-27T23:45:44.127525",
+  "stats": [
+    {
+      "timestamp": "2025-04-27T23:45:39.122898",
+      "cpu_percent": 0.2,
+      "memory_percent": 1.4,
+      "memory_used": 4186501120,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 308163705856,
+      "disk_write_bytes": 935636495360,
+      "disk_read_count": 27653702,
+      "disk_write_count": 30217721
+    },
+    {
+      "timestamp": "2025-04-27T23:45:41.125104",
+      "cpu_percent": 2.9,
+      "memory_percent": 1.4,
+      "memory_used": 4212436992,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 308203432960,
+      "disk_write_bytes": 935638625280,
+      "disk_read_count": 27663398,
+      "disk_write_count": 30217964
+    },
+    {
+      "timestamp": "2025-04-27T23:45:43.127423",
+      "cpu_percent": 0.9,
+      "memory_percent": 1.4,
+      "memory_used": 4211417088,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 308312538112,
+      "disk_write_bytes": 935786867712,
+      "disk_read_count": 27689556,
+      "disk_write_count": 30218796
+    }
+  ]
+}

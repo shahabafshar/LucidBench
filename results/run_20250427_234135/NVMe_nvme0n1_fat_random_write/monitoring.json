@@ -1,0 +1,54 @@
+{
+  "storage_type": "NVMe",
+  "device": "nvme0n1",
+  "filesystem": "fat",
+  "test_type": "random_write",
+  "start_time": "2025-04-28T12:31:45.287229",
+  "end_time": "2025-04-28T12:31:53.294757",
+  "stats": [
+    {
+      "timestamp": "2025-04-28T12:31:46.288293",
+      "cpu_percent": 0.0,
+      "memory_percent": 1.4,
+      "memory_used": 4267134976,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 392064281600,
+      "disk_write_bytes": 11538463451136,
+      "disk_read_count": 37513479,
+      "disk_write_count": 353460884
+    },
+    {
+      "timestamp": "2025-04-28T12:31:48.290189",
+      "cpu_percent": 2.4,
+      "memory_percent": 1.4,
+      "memory_used": 4282048512,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 392107609088,
+      "disk_write_bytes": 11538465622016,
+      "disk_read_count": 37524022,
+      "disk_write_count": 353461141
+    },
+    {
+      "timestamp": "2025-04-28T12:31:50.292452",
+      "cpu_percent": 1.4,
+      "memory_percent": 1.4,
+      "memory_used": 4274606080,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 392474733568,
+      "disk_write_bytes": 11538465622016,
+      "disk_read_count": 37613653,
+      "disk_write_count": 353461141
+    },
+    {
+      "timestamp": "2025-04-28T12:31:52.294658",
+      "cpu_percent": 0.1,
+      "memory_percent": 1.4,
+      "memory_used": 4223234048,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 392554998784,
+      "disk_write_bytes": 11538955749376,
+      "disk_read_count": 37632787,
+      "disk_write_count": 353465165
+    }
+  ]
+}

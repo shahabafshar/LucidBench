@@ -1,0 +1,76 @@
+{
+  "storage_type": "SSD",
+  "device": "sde",
+  "filesystem": "fat",
+  "test_type": "sequential_write",
+  "start_time": "2025-04-28T03:49:17.545910",
+  "end_time": "2025-04-28T03:49:29.557314",
+  "stats": [
+    {
+      "timestamp": "2025-04-28T03:49:18.547237",
+      "cpu_percent": 0.2,
+      "memory_percent": 1.4,
+      "memory_used": 4081762304,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 340017497088,
+      "disk_write_bytes": 3499825009664,
+      "disk_read_count": 30017459,
+      "disk_write_count": 108806847
+    },
+    {
+      "timestamp": "2025-04-28T03:49:20.549242",
+      "cpu_percent": 2.5,
+      "memory_percent": 1.4,
+      "memory_used": 4130893824,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 340039631872,
+      "disk_write_bytes": 3499827160064,
+      "disk_read_count": 30022860,
+      "disk_write_count": 108807100
+    },
+    {
+      "timestamp": "2025-04-28T03:49:22.551336",
+      "cpu_percent": 0.8,
+      "memory_percent": 1.4,
+      "memory_used": 4146507776,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 340203103232,
+      "disk_write_bytes": 3499827160064,
+      "disk_read_count": 30062770,
+      "disk_write_count": 108807100
+    },
+    {
+      "timestamp": "2025-04-28T03:49:24.553303",
+      "cpu_percent": 0.9,
+      "memory_percent": 1.4,
+      "memory_used": 4092792832,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 340366156800,
+      "disk_write_bytes": 3499827160064,
+      "disk_read_count": 30102578,
+      "disk_write_count": 108807100
+    },
+    {
+      "timestamp": "2025-04-28T03:49:26.555412",
+      "cpu_percent": 0.6,
+      "memory_percent": 1.4,
+      "memory_used": 4080201728,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 340486308864,
+      "disk_write_bytes": 3500059554816,
+      "disk_read_count": 30131912,
+      "disk_write_count": 108808158
+    },
+    {
+      "timestamp": "2025-04-28T03:49:28.557223",
+      "cpu_percent": 0.2,
+      "memory_percent": 1.4,
+      "memory_used": 4090736640,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 340488553472,
+      "disk_write_bytes": 3500298343424,
+      "disk_read_count": 30131989,
+      "disk_write_count": 108809310
+    }
+  ]
+}
