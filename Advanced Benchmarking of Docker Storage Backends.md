@@ -1,4 +1,4 @@
-# Advanced Benchmarking of Docker Storage Backends: Evaluating Storage Performance in Containerized Environments
+# LucidBench: A Comprehensive Framework for Docker Storage Backend Performance Analysis
 
 **Author:** Shahabeddin Afsharghoochani  
 **Department:** Department of Electrical and Computer Engineering  
@@ -114,17 +114,23 @@ The benchmarking process follows these steps:
 
 ## Results and Discussion
 
-The LucidBench tool provides comprehensive insights into storage performance characteristics:
+The LucidBench tool provides comprehensive insights into storage performance characteristics across different storage types and filesystems:
 
 ### Device-specific Performance
-- **NVMe SSDs:** Demonstrated superior performance with up to 5x higher IOPS compared to HDDs
-- **SATA SSDs:** Showed consistent performance with moderate resource utilization
-- **HDDs:** Exhibited lower but stable performance under sequential workloads
+- **NVMe SSDs:** Demonstrated superior performance with a performance score of 5.63 (ext4), achieving up to 46,855 IOPS and 1.33 GB/s bandwidth
+- **SATA SSDs:** Showed moderate performance with scores ranging from 0.97 to 1.42, delivering 7,820-9,761 IOPS
+- **HDDs:** Exhibited the lowest performance scores (0.04-0.09) with native filesystems achieving 147-243 IOPS
 
-### Resource Utilization
-- **CPU Usage:** Container overhead varied between 5-15% across different storage types
-- **Memory Consumption:** NVMe configurations showed higher memory utilization
-- **I/O Patterns:** Clear correlation between device type and I/O efficiency
+### Filesystem Performance Comparison
+- **ext4:** Achieved the highest performance on NVMe (5.63) with the lowest latency (7.46ms)
+- **xfs & btrfs:** Demonstrated strong performance on all storage types with consistent bandwidth
+- **NTFS anomaly:** Reported unusually high performance on HDDs (1.36) compared to native filesystems (0.09), suggesting caching effects
+- **vfat:** Showed the lowest performance on HDDs (0.04) but competitive performance on NVMe (5.12)
+
+### Latency Characteristics
+- **NVMe devices:** Exhibited the lowest latency across all filesystems (7.46-17.13ms)
+- **SSD configurations:** Showed moderate latency (33.10-75.54ms)
+- **HDD systems:** Demonstrated the highest latency (133.05-214.40ms), particularly with ext2/ext3 filesystems
 
 ### Container Overhead
 - **Performance Impact:** Containerization added 5-10% overhead to raw device performance
@@ -139,21 +145,57 @@ The LucidBench tool provides comprehensive insights into storage performance cha
 ## Future Work
 
 Planned improvements to the LucidBench system include:
+- Support for additional filesystem types (ZFS, f2fs, OverlayFS, etc.)
+- Enhanced workload simulation capabilities (Machine Learning Simulation, etc.)
+- Significance level calculation based on the comparison between the container based results and direct access on storage device
+- Analyzing the impact of concurrency in a multi-container test scenario
 
-### Technical Enhancements
-- Support for additional filesystem types (ZFS, Btrfs)
-- Enhanced workload simulation capabilities
-- Integration with cloud storage providers
 
-### Analysis Improvements
-- Advanced visualization and reporting features
-- Machine learning-based performance prediction
-- Automated optimization recommendations
+## Benchmarking Pitfalls and Interpretation Challenges
 
-### Research Directions
-- Investigation of new storage technologies
-- Performance analysis in cloud environments
-- Container orchestration impact studies
+While LucidBench provides a comprehensive framework for evaluating storage performance across a variety of filesystems and devices, it is important to recognize certain pitfalls that can affect the accuracy and interpretation of benchmark results. These challenges are particularly relevant when comparing native and non-native filesystems, or when system-level caching mechanisms are involved.
+
+### Filesystem and Driver Limitations
+
+During our experiments, we observed that benchmarking results for non-native filesystems, such as NTFS on Linux (typically accessed via NTFS-3G or similar FUSE-based drivers), can be misleading. For example, NTFS sequential write tests on HDDs reported unrealistically high throughput and IOPS values—far exceeding the physical capabilities of the hardware. This anomaly is primarily due to aggressive caching by the operating system or the filesystem driver, which allows data to be written to memory and reported as complete before it is actually flushed to disk. As a result, the measured performance does not reflect the true capabilities of the storage device.
+
+### Impact of Caching on Results
+
+System and driver-level caching can significantly distort benchmark outcomes, especially for filesystems that are not natively supported by the operating system. In such cases, the benchmark tool may report the speed of writing to RAM rather than to the actual storage medium. This effect is evident in our results, where NTFS on Linux showed much higher performance than native filesystems like ext4, despite using identical hardware and test parameters. Disk utilization metrics further confirmed that the device was not being fully utilized during these tests, reinforcing the conclusion that the results were influenced by caching rather than true disk performance.
+
+### Recommendations for Reliable Benchmarking
+
+To ensure meaningful and comparable results, we recommend the following best practices:
+- Prefer native filesystems for the operating system under test (e.g., ext4, xfs, btrfs on Linux).
+- Be cautious when interpreting results from non-native filesystems, and clearly annotate or exclude such data from cross-filesystem comparisons.
+- Where possible, use benchmark options that minimize caching effects (e.g., direct I/O, cache flushes), but recognize that some drivers may still buffer data in memory.
+- Focus on appropriate metrics for each workload: use IOPS for small-block random I/O and throughput (MB/s) for large-block sequential I/O.
+
+By acknowledging these limitations, researchers and practitioners can avoid common pitfalls and draw more accurate conclusions from storage performance benchmarks in containerized environments.
+
+#### Data-driven Comparison Examples
+
+To illustrate these pitfalls, we present two explicit comparisons from our experiments:
+
+**1. ext4 vs. NTFS on HDD (Sequential Write, 1M block size):**
+
+| Filesystem | IOPS | Bandwidth (MB/s) | Elapsed (s) | Disk Util (%) | Realistic? | Notes |
+|------------|------|------------------|-------------|---------------|------------|-------|
+| ext4       | 218  | 218              | 19          | 99.4          | Yes        | Native Linux FS |
+| ntfs       | 860  | 859              | 5           | 0.08          | No         | Caching, not real disk speed |
+
+The ext4 results are consistent with expected HDD performance, while NTFS reports unrealistically high throughput and extremely low disk utilization. This discrepancy is due to aggressive caching by the NTFS driver, which causes the benchmark to measure RAM speed rather than actual disk speed.
+
+**2. NTFS on HDD vs. NTFS on NVMe (Sequential Write, 1M block size):**
+
+| Device | Filesystem | IOPS | Bandwidth (MB/s) | Elapsed (s) | Disk Util (%) | Realistic? | Notes |
+|--------|------------|------|------------------|-------------|---------------|------------|-------|
+| HDD    | NTFS       | 860  | 859              | 5           | 0.08          | No         | Caching, not real disk speed |
+| NVMe   | NTFS       | 879  | 879              | 5           | 0.04          | No         | Caching, not real disk speed |
+
+Despite the significant hardware difference, both devices report nearly identical and implausibly high performance for NTFS. This further confirms that the results are dominated by caching effects rather than true device capabilities.
+
+These examples underscore the importance of careful interpretation and the need to avoid direct comparison of non-native filesystems or results affected by system-level caching.
 
 ## References
 
