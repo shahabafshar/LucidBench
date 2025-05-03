@@ -1,0 +1,1 @@
+jupyter nbconvert analysis/benchmark_analysis_concise.ipynb --to latex --output-dir analysis/
