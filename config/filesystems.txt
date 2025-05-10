@@ -1,3 +1,8 @@
 vfat
-
-
+fat
+f2fs
+ext2
+ext3
+ext4
+xfs
+btrfs
