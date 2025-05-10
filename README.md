@@ -57,22 +57,21 @@ git clone https://github.com/yourusername/lucidbench-orchestrator.git
 cd lucidbench-orchestrator
 ```
 
-2. Run the setup script to verify requirements:
-```bash
-sudo ./scripts/setup.sh
-```
-
-3. Build the Docker image:
-```bash
-docker build -t lucidbench ./config
-```
-
 ## Usage
 
-Run the orchestrator:
+You can run the project in two ways:
+
+1. Using the main entry point (recommended):
+```bash
+sudo ./main.sh
+```
+
+2. Using the orchestrator directly:
 ```bash
 sudo ./scripts/orchestrator.sh
 ```
+
+The main entry point (`main.sh`) provides a fancy interface with ASCII art and runs the orchestrator script. The orchestrator script (`orchestrator.sh`) is the core component that coordinates the entire benchmarking process.
 
 Results will be saved in the `results` directory, organized by device type and filesystem.
 
