@@ -1,0 +1,32 @@
+{
+  "storage_type": "SSD",
+  "device": "sde",
+  "filesystem": "fat",
+  "test_type": "random_read",
+  "start_time": "2025-05-10T11:21:05.369683",
+  "end_time": "2025-05-10T11:21:09.373033",
+  "stats": [
+    {
+      "timestamp": "2025-05-10T11:21:06.370800",
+      "cpu_percent": 0.0,
+      "memory_percent": 1.3,
+      "memory_used": 3700621312,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 466402785792,
+      "disk_write_bytes": 22521947808768,
+      "disk_read_count": 45824455,
+      "disk_write_count": 3419794003
+    },
+    {
+      "timestamp": "2025-05-10T11:21:08.372939",
+      "cpu_percent": 2.5,
+      "memory_percent": 1.3,
+      "memory_used": 3744600064,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 466402785792,
+      "disk_write_bytes": 22521950704640,
+      "disk_read_count": 45824455,
+      "disk_write_count": 3419794383
+    }
+  ]
+}

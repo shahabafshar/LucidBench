@@ -27,8 +27,13 @@ class DeviceDetector:
             print(f"Error parsing lsblk output: {e}", file=sys.stderr)
             return []
 
-    def get_device_info(self, device_name: str) -> Optional[Dict]:
+    def get_device_info(self, device_name: str, device_type: str) -> Optional[Dict]:
         """Get detailed information about a specific device using smartctl."""
+        # Skip optical drives and other non-SMART devices
+        if device_type == 'rom':
+            print(f"Skipping optical drive {device_name}", file=sys.stderr)
+            return None
+            
         try:
             output = subprocess.check_output(
                 ['smartctl', '-i', f'/dev/{device_name}'],
@@ -47,7 +52,10 @@ class DeviceDetector:
                 'rotation_rate': type_info.group(1) if type_info else 'Unknown'
             }
         except subprocess.CalledProcessError as e:
-            print(f"Error getting device info for {device_name}: {e}", file=sys.stderr)
+            if "Device does not support SMART" in e.stderr:
+                print(f"Device {device_name} does not support SMART", file=sys.stderr)
+            else:
+                print(f"Error getting device info for {device_name}: {e}", file=sys.stderr)
             return None
 
     def classify_device(self, device_info: Dict, device_name: str = None) -> str:
@@ -82,7 +90,8 @@ class DeviceDetector:
         
         for device in block_devices:
             device_name = device['name']
-            device_info = self.get_device_info(device_name)
+            device_type = device.get('type', 'unknown')
+            device_info = self.get_device_info(device_name, device_type)
             
             if device_info:
                 device_type = self.classify_device(device_info, device_name)

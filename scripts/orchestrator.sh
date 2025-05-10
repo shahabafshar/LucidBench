@@ -86,18 +86,31 @@ run_benchmark() {
     sleep 2
     
     # Run benchmark container
+    #docker run --rm \
+    #    --name lucidbench \
+    #    --privileged \
+    #    -v "$test_dir:/results" \
+    #    -v "/dev/${device}:/dev/benchmark" \
+    #    lucidbench \
+    #    /dev/benchmark \
+    #    "$filesystem" \
+    #    "/results/test.json" \
+    #    "$device_type" \
+    #    "$device" \
+    #    "$test_type"
+
     docker run --rm \
-        --name lucidbench \
-        --privileged \
-        -v "$test_dir:/results" \
-        -v "/dev/${device}:/dev/benchmark" \
-        lucidbench \
-        /dev/benchmark \
-        "$filesystem" \
-        "/results/test.json" \
-        "$device_type" \
-        "$device" \
-        "$test_type"
+    --name lucidbench \
+    --privileged \
+    --mount type=bind,source="$test_dir",target="/results" \
+    --mount type=bind,source="/dev/${device}",target="/dev/benchmark" \
+    lucidbench \
+    /dev/benchmark \
+    "$filesystem" \
+    "/results/test.json" \
+    "$device_type" \
+    "$device" \
+    "$test_type"
     
     # Stop system monitoring
     kill $monitor_pid

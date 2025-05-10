@@ -1,5 +1,6 @@
 vfat
 fat
+ntfs
 f2fs
 ext2
 ext3

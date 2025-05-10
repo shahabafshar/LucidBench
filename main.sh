@@ -38,4 +38,30 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Run the orchestrator
 echo -e "${YELLOW}Starting LucidBench Orchestrator...${NC}\n"
-"${PROJECT_ROOT}/scripts/orchestrator.sh" "$@" 
+# Check if tmux is installed
+if ! command -v tmux &> /dev/null; then
+    echo -e "${RED}Error: tmux is not installed${NC}"
+    exit 1
+fi
+
+# Create logs directory if it doesn't exist
+LOGS_DIR="${PROJECT_ROOT}/logs"
+mkdir -p "$LOGS_DIR"
+
+# Generate timestamp for log file
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+LOG_FILE="${LOGS_DIR}/lucidbench_${TIMESTAMP}.log"
+
+# Create a new tmux session named 'lucidbench' if it doesn't exist
+if ! tmux has-session -t lucidbench 2>/dev/null; then
+    tmux new-session -d -s lucidbench
+fi
+
+# Start logging the session
+tmux pipe-pane -t lucidbench "cat >> ${LOG_FILE}"
+
+# Run the orchestrator in the tmux session
+tmux send-keys -t lucidbench "${PROJECT_ROOT}/scripts/orchestrator.sh $*" C-m
+
+# Attach to the tmux session
+tmux attach-session -t lucidbench
