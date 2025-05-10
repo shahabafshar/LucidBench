@@ -132,11 +132,6 @@ The LucidBench tool provides comprehensive insights into storage performance cha
 - **SSD configurations:** Showed moderate latency (33.10-75.54ms)
 - **HDD systems:** Demonstrated the highest latency (133.05-214.40ms), particularly with ext2/ext3 filesystems
 
-### Container Overhead
-- **Performance Impact:** Containerization added 5-10% overhead to raw device performance
-- **Resource Isolation:** Effective isolation maintained across different workloads
-- **Scalability:** Linear performance scaling observed up to 8 concurrent containers
-
 ### Workload Patterns
 - **Random I/O:** NVMe SSDs showed 3-4x better performance
 - **Sequential I/O:** SATA SSDs performed competitively with NVMe
