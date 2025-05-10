@@ -1,6 +1,33 @@
-# LucidBench Orchestrator
+# LucidBench: Docker Benchmark Framework
 
-A Docker-based filesystem benchmarking tool that automates the testing of different filesystems across various storage devices.
+## About
+
+```
+██╗     ██╗   ██╗ ██████╗██╗██████╗     ██████╗ ███████╗███╗   ██╗ ██████╗██╗  ██╗
+██║     ██║   ██║██╔════╝██║██╔══██╗    ██╔══██╗██╔════╝████╗  ██║██╔════╝██║  ██║
+██║     ██║   ██║██║     ██║██║  ██║    ██████╔╝█████╗  ██╔██╗ ██║██║     ███████║
+██║     ██║   ██║██║     ██║██║  ██║    ██╔══██╗██╔══╝  ██║╚██╗██║██║     ██╔══██║
+███████╗╚██████╔╝╚██████╗██║██████╔╝    ██████╔╝███████╗██║ ╚████║╚██████╗██║  ██║
+╚══════╝ ╚═════╝  ╚═════╝╚═╝╚═════╝     ╚═════╝ ╚══════╝╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝
+```
+
+This project is developed and maintained by Shahab Afshar.
+
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0000--3682--0471-A6CE39?style=flat-square&logo=ORCID&logoColor=white)](https://orcid.org/0009-0000-3682-0471)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Shahab_Afshar-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/shahabafshar)
+
+**Professor:** [Dr. Mai Zheng](https://scholar.google.com/citations?user=mFcB0JMAAAAJ&hl=en) [![Google Scholar](https://img.shields.io/badge/Google_Scholar-4285F4?style=flat-square&logo=google-scholar&logoColor=white)](https://scholar.google.com/citations?user=mFcB0JMAAAAJ&hl=en)
+
+**Course:** Advanced Data Storage Systems  
+**Department:** Electrical and Computer Engineering (ECPE)  
+**University:** Iowa State University  
+
+**Testbed:** [Chameleon Cloud](https://www.chameleoncloud.org/)  
+Chameleon Cloud is a large-scale, reconfigurable experimental environment for cloud computing research, providing researchers with bare metal access to explore novel cloud architectures and applications [1].
+
+[1] K. Keahey et al., "Lessons Learned from the Chameleon Testbed," in Proceedings of the 2020 USENIX Annual Technical Conference (USENIX ATC '20), USENIX Association, July 2020.
+
+**LucidBench** is A Docker-based filesystem benchmarking tool that automates the testing of different filesystems across various storage devices.
 
 ## Features
 
