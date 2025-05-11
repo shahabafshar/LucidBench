@@ -1,152 +1,81 @@
 # LucidBench: A Comprehensive Framework for Docker Storage Backend Performance Analysis
 
-**Author:** Shahabeddin Afsharghoochani  
-**Department:** Department of Electrical and Computer Engineering  
-**Course:** Advanced Data Storage Systems (Spring 2025)  
-**Location:** Ames, IA, USA  
-**Email:** [safshar@iastate.edu](mailto:safshar@iastate.edu)  
-**ORCID:** [0009-0000-3682-0471](https://orcid.org/0009-0000-3682-0471)
+Shahabeddin Afsharghoochani, Department of Electrical and Computer Engineering, Iowa State University, Ames, IA, USA. Email: safshar@iastate.edu
 
 ## Abstract
 
-Containerized environments rely on optimized storage backends to achieve the best I/O performance, handling snapshots, and system reliability. This research implements LucidBench, a Docker-based filesystem benchmarking tool that automates the testing of different filesystems across various storage devices. The tool provides comprehensive performance analysis of storage backends in containerized environments, with a focus on real-world workload patterns and system resource utilization. Our experimental results demonstrate significant performance variations across different storage types and filesystems, with NVMe SSDs showing up to 5x better IOPS performance compared to traditional HDDs. The analysis reveals critical insights into resource utilization patterns and container overhead, providing valuable guidance for storage backend selection in containerized environments.
+Performance of storage backends in containerized systems is a major driver of application efficiency, reliability, and scalability.We present LucidBench, a Docker-based benchmarking toolkit to enable automatic testing of various filesystems on various storage devices.LucidBench provides a thorough assessment of storage performance in containerized environments through real-world workload patterns and system resource utilization. Results of experimentation exhibit high contrast of performance in storage types and filesystems with up to five times more IOPS by NVMe SSD over HDD. The results provide insightful recommendations for resource usage and container overhead, informing the choice of storage backends for containerized workloads. 
 
-**Keywords:** Docker, storage performance, filesystem benchmarking, IOPS, container, monitoring, automation
+Index Terms— Docker, storage performance, filesystem benchmarking, IOPS, container, monitoring, automation.
 
-## Introduction
+## I. Introduction
 
-The rapid adoption of containerized applications in enterprise computing, artificial intelligence, and cloud-native workloads necessitates a deep understanding of storage performance trade-offs. Docker provides several storage drivers whose performance is greatly influenced by workload type and underlying storage devices. This complexity is further compounded by the diverse range of storage technologies available, from traditional hard disk drives (HDDs) to high-performance NVMe solid-state drives (SSDs).
+The widespread adoption of containerized systems for enterprise computing, artificial intelligence, and cloud-native applications has made it more important to comprehend storage performance trade-offs. Docker, a leading containerization platform, has several operating system-level storage drivers whose performance will be a function of both the workload type and the storage device characteristics. The range of storage drivers available, from traditional HDDs to high-performance NVMe SSDs, further complicates storage choice.
 
-The proliferation of container technology, notably Docker, across diverse enterprise and cloud-native infrastructures emphasizes the necessity for efficient, reliable, and scalable storage solutions. This research implements LucidBench, an automated benchmarking tool that provides insights into storage performance characteristics across different device types and filesystems. The tool addresses the critical need for standardized performance evaluation in containerized environments, where storage performance can significantly impact application behavior and resource utilization.
-## Research Questions
+With increasing workloads shifting to container environments, the performance profile of storage backends has become a primary consideration. How well the resources are utilized, the performance variability across multiple storage drivers and filesystems, and the absence of standard benchmarking environments for container configurations are some of the reasons making the problem so complex. Current benchmarking packages do not include the particular overheads of containers, lack a full vision of resource monitoring, and fail to provide representative workloads for containers [1]. There is an urgent requirement for a standardized solution that can provide meaningful performance assessments directed towards containerized environments.
 
-This study aims to address the following key research questions:
+## II. Related Work and Motivation
 
-1. **Performance Characteristics:** How do different Docker storage backends perform across various storage devices (HDD, SATA SSD, NVMe SSD) in terms of:
-   - IOPS (Input/Output Operations Per Second)
-   - Throughput
-   - Latency
-   - CPU and RAM utilization
+Storage backends' influence on the performance of containers has been researched extensively. I/O efficiency in highly container-consolidated environments has been studied, and the focus is especially on OverlayFS and optimization of synchronization [1]. How crucial it is to understand overhead that is container-specific in performance analysis of storage has been exhibited. Performance metrics of ZFS and Btrfs filesystems under different scenarios have been compared [2]. Different backing filesystem effects on Docker storage performance have been tested, underscoring the importance of benchmarking methodologies to be thorough [3].
 
-2. **Workload Impact:** How do different I/O patterns affect storage performance in containerized environments?
-   - Random vs. sequential access patterns
-   - Read vs. write operations
-   - Mixed workload scenarios
-   - Block size variations
+Storage backend performance behavior in containerized environments has become increasingly significant as organizations move more workloads to container platforms.The adoption of container technologies, especially Docker, has revolutionized application deployment and management. Surveys across industries have reported that majority of organizations utilize containers in production nowadays [3]. As the popularity increases so is the need to comprehend storage performance behavior in containerized workloads better.
 
-3. **Resource Utilization:** What is the relationship between storage performance and system resource utilization?
-   - CPU overhead of different storage drivers
-   - Memory consumption patterns
-   - I/O wait times and system load
+Storage system performance traits in containerized systems exhibit significant variation depending on a variety of key factors. Storage driver selection, such as overlay2 and devicemapper, plays an important role to determine overall system performance [1]. Selection of underlying filesystem implementation, ext4, xfs, or btrfs, further introduces varying performance traits that must be critically examined [2]. Physical storage device type, ranging from traditional HDDs to blazing NVMe SSDs, contributes further to these variations.
 
+## III. Research Questions and Methodology
 
-## System Architecture
+The research question revolves around three major areas of concern in Docker storage backend performance and trend. The first issue is concerned with the inherent trends of performance encountered by various Docker storage backends operated on various forms of storage devices from traditional Hard Disk Drives (HDDs), Serial ATA Solid State Devices (SATA SSDs), to Non-Volatile Memory Express Solid State Devices (NVMe SSDs). This research incorporates a detailed analysis of Input/Output Operations Per Second (IOPS), throughput metrics, latency values, and the respective CPU and RAM consumption patterns.
 
-LucidBench is designed with a modular architecture consisting of several key components:
+The second area of research examines the impacts of heterogeneous I/O workload patterns on storage performance in containerized systems. Research involves comparative performance patterns under random and sequential access patterns, performance differences under read and write operations, effects of mixed workload conditions on performance, and impacts of varying block sizes on system-wide performance [3].
 
-### Device Detection Module
-- **Hardware Identification:** Utilizes `lsblk` and `smartctl` for comprehensive device detection
-- **Device Classification:** Automatically categorizes storage devices into HDD, SATA SSD, and NVMe SSD
-- **Performance Profiling:** Pre-benchmark device characterization for baseline performance metrics
+The third research focus investigates the intricate relationship between storage performance and system resource consumption.This research is interested in quantifying the CPU overhead incurred by different storage drivers [1], memory usage behavior profiling across different storage settings, and examining the impact of I/O wait times on system load.
 
-### Benchmark Orchestrator
-- **Container Management:** Handles Docker container lifecycle and configuration
-- **Test Execution:** Coordinates benchmark runs across different storage configurations
-- **Error Handling:** Implements robust error recovery and logging mechanisms
+## IV. System Architecture and Implementation
 
-### Resource Monitoring
-- **System Metrics:** Tracks CPU, memory, and I/O statistics in real-time
-- **Container Metrics:** Monitors container-specific resource utilization
-- **Performance Logging:** Maintains detailed performance logs for post-analysis
+The LucidBench tool uses a seasoned modular architecture that integrates four main components for end-to-end storage benchmarking assistance in containers. The architecture attempts to provide a scientific approach to measuring performance with flexibility and extensibility.
 
-### Result Analysis
-- **Data Processing:** Aggregates and normalizes benchmark results
-- **Visualization:** Generates performance comparison charts and graphs
-- **Report Generation:** Creates comprehensive performance reports
+The Device Detection Module is the foundation of the system, employing sophisticated hardware detection techniques through the hybridization of `lsblk` and `smartctl` utilities. The module performs thorough device detection and applies high-level classification algorithms to categorize storage devices into pre-established classes: HDD, SATA SSD, and NVMe SSD. Pre-benchmark device characterization capability is also included in the module, which establishes baseline performance thresholds to serve as benchmarks for subsequent analysis.
 
-## Implementation Details
+Benchmark Orchestrator module orchestrates the complex orchestration of benchmark operation. It enables rich container lifecycle management with complete control of Docker container lifecycle from launching to shutdown.The Orchestrator governs benchmark performance across different storage configurations with intense control over test parameters and environments. The system stability is ensured by mature error recovery capability, robust error recovery mechanism, and intensive logging.
 
-The system is implemented using Python, Shell Script and Docker, with the following key features:
+The Resource Monitoring subsystem allows real-time performance monitoring along multiple dimensions. It monitors system-level metrics such as CPU usage, memory, and I/O operations in real time. The subsystem offers monitoring to the container level, with high-granularity visibility into resource consumption patterns in containerized environments. All of the performance data is logged in a structured format with high-granularity timestamps to support high-granularity post-processing as well as correlation research.
 
-### Automated Device Detection
-- **Device Scanning:** Uses `lsblk` for device enumeration
-- **Smart Monitoring:** Implements `smartctl` for device health checks
-- **Performance Classification:** Categorizes devices based on performance characteristics
+The Result Analysis module has sophisticated data processing capabilities, utilizing sophisticated aggregation and result normalization algorithms. The module generates in-depth visualizations through comparative charts and graphs utilized to facilitate easy analysis of complex performance information. The analysis subsystem concludes through the generation of in-depth performance reports, for instance, statistical analysis and performance data resulting in storage backend decision-making.
 
-### Docker-based Execution
-- **Container Orchestration:** Manages Docker container deployment and configuration
-- **Storage Mounting:** Handles filesystem mounting and unmounting
-- **Resource Isolation:** Ensures consistent testing environments
+## V. Results and Discussion
 
-### Real-time Monitoring
-- **System Metrics:** Tracks CPU, memory, and I/O using `iostat` and `vmstat`
-- **Container Metrics:** Monitors container-specific resource usage
-- **Performance Logging:** Maintains detailed performance logs
-
-### Benchmark Automation
-- **Workload Generation:** Uses `fio` for comprehensive I/O testing
-- **Test Patterns:** Implements various I/O patterns (random, sequential, mixed)
-- **Result Collection:** Automates data gathering and storage
-
-## Methodology
-
-The benchmarking process follows these steps:
-
-### 1. Device Detection and Classification
-- **Device Discovery:** Automatic detection of available storage devices
-- **Performance Profiling:** Initial performance assessment
-- **Filesystem Preparation:** Mounting and configuration of test filesystems
-
-### 2. Benchmark Execution
-- **Container Deployment:** Docker container setup with specified configurations
-- **Workload Execution:** Running standardized benchmark tests
-- **Performance Monitoring:** Real-time tracking of system metrics
-
-### 3. Data Collection
-- **I/O Metrics:** Recording IOPS, throughput, and latency
-- **Resource Usage:** Tracking CPU, memory, and I/O utilization
-- **Container Metrics:** Monitoring container-specific performance
-
-### 4. Analysis and Reporting
-- **Performance Comparison:** Cross-device and cross-filesystem analysis
-- **Resource Analysis:** Evaluation of resource utilization patterns
-- **Recommendation Generation:** Storage backend selection guidance
-
-## Results and Discussion
-
-The LucidBench tool provides comprehensive insights into storage performance characteristics across different storage types and filesystems:
+LucidBench is a tool providing copious data about storage performance capacity on diverse storage and filesystems:
 
 ### Device-specific Performance
-- **NVMe SSDs:** Demonstrated superior performance with a performance score of 5.63 (ext4), achieving up to 46,855 IOPS and 1.33 GB/s bandwidth
-- **SATA SSDs:** Showed moderate performance with scores ranging from 0.97 to 1.42, delivering 7,820-9,761 IOPS
-- **HDDs:** Exhibited the lowest performance scores (0.04-0.09) with native filesystems achieving 147-243 IOPS
+- **NVMe SSDs:** Illustrated higher performance with 5.63 performance rating (ext4), handling 46,855 IOPS up to and 1.33 GB/s of bandwidth
+- **SATA SSDs:** Posted medium-level performance with scores of 0.97 to 1.42, outputting 7,820-9,761 IOPS
+- **HDDs:** Posted lowest-performance scores (0.04-0.09) with native filesystems putting out 147-243 IOPS
 
-### Filesystem Performance Comparison
-- **ext4:** Achieved the highest performance on NVMe (5.63) with the lowest latency (7.46ms)
-- **xfs & btrfs:** Demonstrated strong performance on all storage types with consistent bandwidth
-- **NTFS anomaly:** Reported unusually high performance on HDDs (1.36) compared to native filesystems (0.09), suggesting caching effects
-- **vfat:** Showed the lowest performance on HDDs (0.04) but competitive performance on NVMe (5.12)
+### Filesystem Comparison in Performance
+- **ext4:** Had peak performance on NVMe (5.63) with lowest latency (7.46ms)
+- **xfs & btrfs:** Expressed excellent performance on all storage with equal bandwidth
+- **NTFS anomaly:** Expressed very excellent performance on HDDs (1.36) compared to native filesystems (0.09), suggesting caching impact
+- **vfat:** Expressed poorest performance on HDDs (0.04) but similar performance on NVMe (5.12)
 
 ### Latency Characteristics
-- **NVMe devices:** Exhibited the lowest latency across all filesystems (7.46-17.13ms)
-- **SSD configurations:** Showed moderate latency (33.10-75.54ms)
-- **HDD systems:** Demonstrated the highest latency (133.05-214.40ms), particularly with ext2/ext3 filesystems
+- **NVMe devices:** Expressed lowest latency for all filesystems (7.46-17.13ms)
+- **SSD configurations:** Logged intermediate latency (33.10-75.54ms)
+- **HDD systems:** Logged highest latency (133.05-214.40ms), particularly in ext2/ext3 filesystem
 
 ### Workload Patterns
-- **Random I/O:** NVMe SSDs showed 3-4x better performance
-- **Sequential I/O:** SATA SSDs performed competitively with NVMe
-- **Mixed Workloads:** Clear performance differentiation based on device type
+- **Random I/O:** NVMe SSD logged 3-4 times better performance
+- **Sequential I/O:** Comparable good performance by SATA SSD to NVMe
+- **Mixed Workloads:** Performance disparity obvious according to device type
 
-## Future Work
+## VI. Future Work
 
-Planned improvements to the LucidBench system include:
-- Support for additional filesystem types (ZFS, f2fs, OverlayFS, etc.)
-- Enhanced workload simulation capabilities (Machine Learning Simulation, etc.)
-- Significance level calculation based on the comparison between the container based results and direct access on storage device
-- Analyzing the impact of concurrency in a multi-container test scenario
+The LucidBench system is planned for significant enhancements across several key areas. The workload simulation capabilities will be expanded to include realistic application scenarios such as web server operations with open-read-close patterns and log appending, email server workloads featuring multi-threaded operations in single directories, and file server workloads combining random and sequential operations [3]. These simulations will incorporate varying block sizes to better represent real-world usage patterns.
 
+A comprehensive filesystem performance analysis framework will be developed to evaluate the characteristics of Ext4, XFS, and Btrfs filesystems [2]. This analysis will investigate the impact of Copy-on-Write (CoW) mechanisms across different workload types, examine the performance implications of synchronous versus asynchronous write operations, and assess the effectiveness of filesystem-specific features including journaling and checksumming capabilities.
 
-## Benchmarking Pitfalls and Interpretation Challenges
+The system will incorporate advanced multi-container performance analysis capabilities, focusing on scaling behavior with concurrent containers ranging from one to three instances [3]. This analysis will examine resource contention patterns under various workload scenarios, evaluate the performance implications of container density on storage backends, and investigate cross-container I/O interference patterns [1].
+
+## VII. Benchmarking Pitfalls and Interpretation Challenges
 
 While LucidBench provides a comprehensive framework for evaluating storage performance across a variety of filesystems and devices, it is important to recognize certain pitfalls that can affect the accuracy and interpretation of benchmark results. These challenges are particularly relevant when comparing native and non-native filesystems, or when system-level caching mechanisms are involved.
 
@@ -194,10 +123,8 @@ These examples underscore the importance of careful interpretation and the need 
 
 ## References
 
-[1] S. Faculty of Computer Sciences Megatrend University, Belgrade, "A Dockers Storage Performance Evaluation: Impact of Backing File Systems," Journal of intelligent systems and internet of things, 2021, doi: 10.54216/jisiot.030101.
+[1] N. Mizusawa, Y. Seki, J. Tao, and S. Yamaguchi, "A Study on I/O Performance in Highly Consolidated Container-Based Virtualized Environment on OverlayFS with Optimized Synchronization," in 2020 14th International Conference on Ubiquitous Information Management and Communication (IMCOM), IEEE, Jan. 2020, pp. 1–4. doi: 10.1109/imcom48794.2020.9001733.
 
-[2] N. Mizusawa, Y. Seki, J. Tao, and S. Yamaguchi, "A Study on I/O Performance in Highly Consolidated Container-Based Virtualized Environment on OverlayFS with Optimized Synchronization," in 2020 14th International Conference on Ubiquitous Information Management and Communication (IMCOM), IEEE, Jan. 2020, pp. 1–4. doi: 10.1109/imcom48794.2020.9001733.
+[2] D. Gurjar and S. S. Kumbhar, "A Review on Performance Analysis of ZFS & BTRFS," in 2019 International Conference on Communication and Signal Processing (ICCSP), IEEE, Apr. 2019, pp. 0073–0076. doi: 10.1109/iccsp.2019.8698103. 
 
-[3] D. Gurjar and S. S. Kumbhar, "A Review on Performance Analysis of ZFS & BTRFS," in 2019 International Conference on Communication and Signal Processing ( ICCSP), IEEE, Apr. 2019, pp. 0073–0076. doi: 10.1109/iccsp.2019.8698103.
-
-[4] D. Gurjar and S. S. Kumbhar, "A Review on Performance Analysis of ZFS & BTRFS," in 2019 International Conference on Communication and Signal Processing ( ICCSP), IEEE, Apr. 2019, pp. 0073–0076. doi: 10.1109/iccsp.2019.8698103. 
+[3] Faculty of Computer Sciences, Megatrend University, Belgrade, Serbia and A. Ramadan, "A Dockers Storage Performance Evaluation: Impact of Backing File Systems," JISIoT, pp. 8–17, 2021, doi: 10.54216/JISIoT.030101.

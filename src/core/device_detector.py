@@ -55,7 +55,7 @@ class DeviceDetector:
             if "Device does not support SMART" in e.stderr:
                 print(f"Device {device_name} does not support SMART", file=sys.stderr)
             else:
-                print(f"Error getting device info for {device_name}: {e}", file=sys.stderr)
+            print(f"Error getting device info for {device_name}: {e}", file=sys.stderr)
             return None
 
     def classify_device(self, device_info: Dict, device_name: str = None) -> str:

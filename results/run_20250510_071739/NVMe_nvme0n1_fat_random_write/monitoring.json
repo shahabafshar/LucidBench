@@ -1,0 +1,32 @@
+{
+  "storage_type": "NVMe",
+  "device": "nvme0n1",
+  "filesystem": "fat",
+  "test_type": "random_write",
+  "start_time": "2025-05-10T20:05:55.430167",
+  "end_time": "2025-05-10T20:05:59.433619",
+  "stats": [
+    {
+      "timestamp": "2025-05-10T20:05:56.431387",
+      "cpu_percent": 0.0,
+      "memory_percent": 1.4,
+      "memory_used": 3836612608,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 508867826176,
+      "disk_write_bytes": 30544839226880,
+      "disk_read_count": 52031584,
+      "disk_write_count": 3663197534
+    },
+    {
+      "timestamp": "2025-05-10T20:05:58.433529",
+      "cpu_percent": 2.7,
+      "memory_percent": 1.4,
+      "memory_used": 3822481408,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 508867826176,
+      "disk_write_bytes": 30544842233344,
+      "disk_read_count": 52031584,
+      "disk_write_count": 3663197934
+    }
+  ]
+}
