@@ -39,15 +39,15 @@ Chameleon Cloud is a large-scale, reconfigurable experimental environment for cl
 
 ## Prerequisites
 
-- Linux-based operating system
-- Docker installed and running
-- Root/sudo access for device operations
-- Required system tools:
-  - lsblk
-  - smartctl (smartmontools)
-  - iostat (sysstat)
-  - vmstat
-  - fio
+- Linux-based operating system (Ubuntu 20.04 LTS or newer recommended)
+- Docker Engine (version 20.10.0 or newer)
+- Root/sudo privileges for device management
+- Required system packages:
+  - util-linux (for lsblk)
+  - smartmontools (for smartctl)
+  - sysstat (for iostat)
+  - procps (for vmstat)
+  - fio (Flexible I/O Tester)
 
 ## Installation
 
