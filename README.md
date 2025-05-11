@@ -78,7 +78,7 @@ Results will be saved in the `results` directory, organized by device type and f
 ## Project Structure
 
 ```
-lucidbench-orchestrator/
+lucidbench/
 ├── config/
 │   ├── Dockerfile
 │   └── requirements.txt
