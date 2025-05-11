@@ -25,7 +25,7 @@ This project is developed and maintained by Shahab Afshar.
 **Testbed:** [Chameleon Cloud](https://www.chameleoncloud.org/)  
 Chameleon Cloud is a large-scale, reconfigurable experimental environment for cloud computing research, providing researchers with bare metal access to explore novel cloud architectures and applications [1].
 
-[1] K. Keahey et al., "Lessons Learned from the Chameleon Testbed," in Proceedings of the 2020 USENIX Annual Technical Conference (USENIX ATC '20), USENIX Association, July 2020.
+[1] *K. Keahey et al., "Lessons Learned from the Chameleon Testbed," in Proceedings of the 2020 USENIX Annual Technical Conference (USENIX ATC '20), USENIX Association, July 2020.*
 
 **LucidBench** is A Docker-based filesystem benchmarking tool that automates the testing of different filesystems across various storage devices.
 
