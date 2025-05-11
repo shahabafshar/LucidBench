@@ -1,0 +1,32 @@
+{
+  "storage_type": "NVMe",
+  "device": "nvme0n1",
+  "filesystem": "f2fs",
+  "test_type": "sequential_read",
+  "start_time": "2025-05-11T20:45:05.837673",
+  "end_time": "2025-05-11T20:45:09.841108",
+  "stats": [
+    {
+      "timestamp": "2025-05-11T20:45:06.838864",
+      "cpu_percent": 0.0,
+      "memory_percent": 1.1,
+      "memory_used": 2629672960,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 509684228608,
+      "disk_write_bytes": 38558896705024,
+      "disk_read_count": 52056234,
+      "disk_write_count": 6638932871
+    },
+    {
+      "timestamp": "2025-05-11T20:45:08.841016",
+      "cpu_percent": 2.7,
+      "memory_percent": 1.1,
+      "memory_used": 2645782528,
+      "memory_total": 540799242240,
+      "disk_read_bytes": 509685314048,
+      "disk_write_bytes": 38558899310080,
+      "disk_read_count": 52056284,
+      "disk_write_count": 6638933172
+    }
+  ]
+}
