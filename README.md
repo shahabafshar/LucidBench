@@ -53,8 +53,8 @@ Chameleon Cloud is a large-scale, reconfigurable experimental environment for cl
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/lucidbench-orchestrator.git
-cd lucidbench-orchestrator
+git clone https://github.com/shahabafshar/LucidBench.git
+cd LucidBench
 ```
 
 ## Usage
